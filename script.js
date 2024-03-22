@@ -128,6 +128,31 @@ function deleteItem(index) {
   itens.splice(index, 1)
   setItensBD()
   loadItens()
+  readThenDelete();
+
+  function readThenDelete() {
+    query = new Parse.Query(User);
+    query.equalTo("CPF", itens[index].cpf);
+    query.first().then(function (User) {
+        if (pet) {
+            deletePet(User);
+        } else {
+            console.log("Usuário não encontrado. Tente novamente");
+            return null;
+        }
+    }).catch(function (error) {
+        console.log("Error: " + error.code + " " + error.message);
+        return null;
+    });
+}
+
+  function deletePet(foundUser) {
+    foundUser.destroy().then(function(response) {
+      console.log('Usuário deletado com sucesso');
+    }).catch(function(response, error) {
+      console.log('Error: '+ error.message);
+    });
+}
 }
 
 function insertItem(item, index) {

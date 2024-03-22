@@ -8,6 +8,7 @@
   <title>CRUD</title>
   <link rel="stylesheet" href="style.css">
   <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+  <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
 </head>
 
 <body>
@@ -24,6 +25,8 @@
             <th>Nome</th>
             <th>CPF</th>
             <th>Endereço</th>
+            <th>Email</th>
+  
             <th>Morador (1) <br/>Admnistrador (2)</th>
             <th class="acao">Editar</th>
             <th class="acao">Excluir</th>
@@ -37,19 +40,25 @@
     <div class="modal-container">
       <div class="modal">
         <form>
-          <label for="m-nome">Nome</label>
-          <input id="m-nome" type="text" required />
+          <label for="username">Nome</label>
+          <input id="username" type="text" required placeholder="Name"/>
   
-          <label for="m-cpf">CPF</label>
-          <input id="m-cpf" type="text" required />
+          <label for="usercpf">CPF</label>
+          <input id="usercpf" type="string" required placeholder="CPF" />
   
-          <label for="m-endereco">Endereço</label>
-          <input id="m-endereco" type="text" required />
+          <label for="userendereco">Endereço</label>
+          <input id="userendereco" type="text" required placeholder="Endereco"/>
 
-          <label for="m-tipo">Tipo</label>
-          <input id="m-tipo" type="number" required />
+          <label for="useremail">Email</label>
+          <input id="useremail" type="text" required placeholder="email"/>
 
-          <button id="btnSalvar">Salvar</button>
+          <label for="userpassword">Senha</label>
+          <input id="userpassword" type="password" placeholder="password" />
+
+          <label for="usertipo">Tipo</label>
+          <input id="usertipo" type="string" required placeholder="Tipo"/>
+
+          <button id="createButton">Salvar</button>
         </form>
       </div>
     </div>

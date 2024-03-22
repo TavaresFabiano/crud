@@ -12,9 +12,14 @@ var User = Parse.Object.extend("User");
 let itens
 let id
 
+
+
     // Initialize Parse
     Parse.initialize("l6d6YdXjcrV1ONGJ6wD74Bn0za7zu5SfzS8Rxpv6", "Ay2E0UL8WoMHyyGIuPlGIue63L4H8Q6aN45cpi6O"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
     Parse.serverURL = "https://parseapi.back4app.com/";
+
+
+//INSERIR NO BACK4
 
 async function createParseUser() {
   // Creates a new Parse "User" object, which is created by default in your Parse app
@@ -47,6 +52,7 @@ document.getElementById("createButton").addEventListener("click", async function
   createParseUser();
 });
 
+//MODAL
 
 function openModal(edit = false, index = 0) {
   modal.classList.add('active')
@@ -65,8 +71,7 @@ function openModal(edit = false, index = 0) {
     sPassword.value = itens[index].password
     sTipo.value = itens[index].tipo
     id = index
-
-
+    
 
   } else {
     sNome.value = ''
@@ -79,77 +84,67 @@ function openModal(edit = false, index = 0) {
   
 }
 
+
+// EDITAR NA LISTA SITE
+
 function editItem(index) {
-
   openModal(true, index)
-
-  readThenUpdate();
-
-
 }
 
-function readThenUpdate() {
-  query = new Parse.Query(User);
-  query.equalTo("CPF", sCpf);
-  query.first().then(function (user) {
-    if (user) {
-      update(user);
-    } else {
-      console.log("Não encontrado. Tente novamente");
-    }
-  }).catch(function (error) {
-    console.log("Error: " + error.code + " " + error.message);
-  });
-}
+// EDITAR NO BACK4
 
-function update(foundUser) {
-foundUser.set('username', itens[index].nome);
-foundUser.set('endereco',itens[index].endereco);
-foundUser.set('email',itens[index].email);
-foundUser.set('passwor',itens[index].password);
-foundUser.set('Tipo',itens[index].tipo);
+async function updatePlayer() {
+  //Retrieve your Parse Object
+  const user = new Parse.Object("User");
 
-foundUser.save().then(function (User) {
-    console.log('Usuário atualizado!');
-  }).catch(function(error) {
-    console.log('Error: ' + error.message);
-  });
-}
+  //set the object
+  user.set('CPF',itens[index].cpf);
+  //define the new values
+  user.path("username", document.getElementById("username").value);
+  user.path("CPF", document.getElementById("usercpf").value);
+  user.path("Endereco", document.getElementById("userendereco").value);
+  user.path("email", document.getElementById("useremail").value);
+  user.path("password", document.getElementById("userpassword").value);
+  user.path("Tipo", document.getElementById("usertipo").value);
 
+  try{
+      //Save the Object
+      let result = await user.save();
+      alert('Dados atualizados!');
+  }catch(error){
+      alert('Falha ao atualizar os dados - Cód: ' + error.message);
+  }
+} 
+
+
+// DELETAR NA LISTA SITE
 
 function deleteItem(index) {
   itens.splice(index, 1)
   setItensBD()
+  deletePlayer()
   loadItens()
-  readThenDelete();
-
+  
 }
 
-function readThenDelete() {
-  itens[id].cpf = sCpf.value;
-  query = new Parse.Query(User);
-  query.equalTo("CPF", sCpf.value);
-  query.first().then(function (user) {
-      if (user) {
-          deleteUser(user);
-      } else {
-          console.log("Usuário não encontrado. Tente novamente");
-          return null;
-      }
-  }).catch(function (error) {
-      console.log("Error: " + error.code + " " + error.message);
-      return null;
-  });
-}
+// DELETAR NO BACK4
 
-function deleteUser(foundUser) {
-  foundUser.destroy().then(function(response) {
-    console.log('Usuário deletado com sucesso');
-  }).catch(function(response, error) {
-    console.log('Error: '+ error.message);
-  });
-}
+async function deletePlayer() {
+  //Retrieve your Parse Object
+  const user = new Parse.Object("User");
+  //set its objectId
+  user.set('CPF',itens[index].cpf);
+  alert (user.set);
+  try{
+      //destroy the object
+      let result = await user.destroy();
+      alert('Usuário deletado!' + result.id);
+  }catch(error){
+      alert('Falha ao deletar o usuário - Cód: ' + error.message);
+  }
+} 
 
+// INSERIR NA LISTA SITE
 
 function insertItem(item, index) {
   let tr = document.createElement('tr')
@@ -170,6 +165,8 @@ function insertItem(item, index) {
   `
   tbody.appendChild(tr)
 }
+
+// BOTÃO
 
 btnSalvar.onclick = e => {
   
@@ -202,6 +199,8 @@ btnSalvar.onclick = e => {
   id = undefined
 }
 
+// CARREGAR LISTA NO SITE
+
 function loadItens() {
   itens = getItensBD()
   tbody.innerHTML = ''
@@ -215,4 +214,3 @@ const getItensBD = () => JSON.parse(localStorage.getItem('dbfunc')) ?? []
 const setItensBD = () => localStorage.setItem('dbfunc', JSON.stringify(itens))
 
 loadItens()
-

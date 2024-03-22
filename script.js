@@ -85,44 +85,37 @@ function editItem(index) {
 
   readThenUpdate();
 
-  function readThenUpdate() {
-      query = new Parse.Query(User);
-      query.equalTo("CPF", sCpf);
-      query.first().then(function (User) {
-        if (User) {
-          update(User);
-        } else {
-          console.log("Não encontrado. Tente novamente");
-        }
-      }).catch(function (error) {
-        console.log("Error: " + error.code + " " + error.message);
-      });
-  }
-  
-  function update(foundUser) {
-      sCpf = "myCpfUpdated";
-      sNome = "myNomeUpdated";
-      sEndereco = "myEnderecoUpdated";
-      sEmail = "myEmailUpdated";
-      sPassword = "myPasswordUpdated";
-      sTipo = "myTipoUpdated";
-      foundUser.set('CPF', sCpf);
-      foundUser.set('username', sNome);
-      foundUser.set('endereco', sEndereco);
-      foundUser.set('email', sEmail);
-      foundUser.set('password', sPassword);
-      foundUser.set('Tipo', sTipo);
-  
-      foundPet.save().then(function (User) {
-        console.log('Usuário atualizado! Name: ' + User.get("username") + ' e CPF: ' + User.get("CPF"));
-      }).catch(function(error) {
-        console.log('Error: ' + error.message);
-      });
-  }
-  
-  
 
 }
+
+function readThenUpdate() {
+  query = new Parse.Query(User);
+  query.equalTo("CPF", sCpf);
+  query.first().then(function (user) {
+    if (user) {
+      update(user);
+    } else {
+      console.log("Não encontrado. Tente novamente");
+    }
+  }).catch(function (error) {
+    console.log("Error: " + error.code + " " + error.message);
+  });
+}
+
+function update(foundUser) {
+foundUser.set('username', itens[index].nome);
+foundUser.set('endereco',itens[index].endereco);
+foundUser.set('email',itens[index].email);
+foundUser.set('passwor',itens[index].password);
+foundUser.set('Tipo',itens[index].tipo);
+
+foundUser.save().then(function (User) {
+    console.log('Usuário atualizado!');
+  }).catch(function(error) {
+    console.log('Error: ' + error.message);
+  });
+}
+
 
 function deleteItem(index) {
   itens.splice(index, 1)
@@ -130,30 +123,33 @@ function deleteItem(index) {
   loadItens()
   readThenDelete();
 
-  function readThenDelete() {
-    query = new Parse.Query(User);
-    query.equalTo("CPF", itens[index].cpf);
-    query.first().then(function (User) {
-        if (pet) {
-            deletePet(User);
-        } else {
-            console.log("Usuário não encontrado. Tente novamente");
-            return null;
-        }
-    }).catch(function (error) {
-        console.log("Error: " + error.code + " " + error.message);
-        return null;
-    });
 }
 
-  function deletePet(foundUser) {
-    foundUser.destroy().then(function(response) {
-      console.log('Usuário deletado com sucesso');
-    }).catch(function(response, error) {
-      console.log('Error: '+ error.message);
-    });
+function readThenDelete() {
+  itens[id].cpf = sCpf.value;
+  query = new Parse.Query(User);
+  query.equalTo("CPF", sCpf.value);
+  query.first().then(function (user) {
+      if (user) {
+          deleteUser(user);
+      } else {
+          console.log("Usuário não encontrado. Tente novamente");
+          return null;
+      }
+  }).catch(function (error) {
+      console.log("Error: " + error.code + " " + error.message);
+      return null;
+  });
 }
+
+function deleteUser(foundUser) {
+  foundUser.destroy().then(function(response) {
+    console.log('Usuário deletado com sucesso');
+  }).catch(function(response, error) {
+    console.log('Error: '+ error.message);
+  });
 }
+
 
 function insertItem(item, index) {
   let tr = document.createElement('tr')
